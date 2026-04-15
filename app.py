@@ -6,17 +6,12 @@ import pickle
 import tempfile
 import matplotlib.pyplot as plt
 
-# -------------------------------
-# Page Config
-# -------------------------------
 st.set_page_config(page_title="Urban Noise Classifier", layout="centered")
 
-# -------------------------------
-# Load Model and Encoder
-# -------------------------------
+# load model and encoder
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model("mel_model.h5")
+    return tf.keras.models.load_model("mel_model2.h5")
 
 @st.cache_resource
 def load_encoder():
@@ -26,9 +21,7 @@ def load_encoder():
 model = load_model()
 le = load_encoder()
 
-# -------------------------------
-# Feature Extraction (MUST MATCH TRAINING)
-# -------------------------------
+# feature extraction (must be same with colab)
 def extract_mel(file_path, max_len=128):
     y, sr = librosa.load(file_path, sr=22050, duration=4)
 
@@ -49,9 +42,6 @@ def extract_mel(file_path, max_len=128):
 
     return mel_db
 
-# -------------------------------
-# UI
-# -------------------------------
 st.title("Urban Noise Classification")
 st.subheader("Mel Spectrogram + CNN Model")
 
@@ -59,38 +49,31 @@ st.write("Upload a .wav audio file to classify urban sounds.")
 
 uploaded_file = st.file_uploader("Upload Audio File", type=["wav"])
 
-# -------------------------------
-# Processing
-# -------------------------------
 if uploaded_file is not None:
 
-    # Play audio
+    # play audio
     st.audio(uploaded_file, format="audio/wav")
 
-    # Save temporarily
+    # save temporarily
     with tempfile.NamedTemporaryFile(delete=False) as tmp:
         tmp.write(uploaded_file.read())
         temp_path = tmp.name
 
-    # Extract feature
+    # extract feature
     feature = extract_mel(temp_path)
     feature_input = feature[np.newaxis, ..., np.newaxis]
 
-    # Predict
+    # predict
     prediction = model.predict(feature_input)
     class_index = np.argmax(prediction)
     class_label = le.inverse_transform([class_index])[0]
     confidence = np.max(prediction)
 
-    # -------------------------------
-    # Display Results
-    # -------------------------------
+    # display results
     st.success(f"Predicted Class: {class_label}")
     st.info(f"Confidence: {confidence:.2f}")
 
-    # -------------------------------
-    # Visualization: Mel Spectrogram
-    # -------------------------------
+    # visualization of spectrogram
     st.subheader("Mel Spectrogram Visualization")
 
     fig, ax = plt.subplots(figsize=(10, 4))
@@ -103,9 +86,7 @@ if uploaded_file is not None:
 
     st.pyplot(fig)
 
-    # -------------------------------
-    # Probability Distribution
-    # -------------------------------
+    # probability distribution
     st.subheader("Prediction Probabilities")
 
     probs = prediction[0]
