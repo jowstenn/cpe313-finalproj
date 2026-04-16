@@ -11,11 +11,11 @@ st.set_page_config(page_title="Urban Noise Classifier", layout="centered")
 # load model and encoder
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model("mel_model3.h5")
+    return tf.keras.models.load_model("mel_model4.h5")
 
 @st.cache_resource
 def load_encoder():
-    with open("label_encoder.pkl", "rb") as f:
+    with open("label_encoder2.pkl", "rb") as f:
         return pickle.load(f)
 
 model = load_model()
