@@ -11,7 +11,7 @@ st.set_page_config(page_title="Urban Noise Classifier", layout="centered")
 # load model and encoder
 @st.cache_resource
 def load_model():
-    return tf.keras.models.load_model("mel_model2.h5")
+    return tf.keras.models.load_model("mel_model3.h5")
 
 @st.cache_resource
 def load_encoder():
@@ -43,7 +43,7 @@ def extract_mel(file_path, max_len=128):
     return mel_db
 
 st.title("Urban Noise Classification")
-st.subheader("Mel Spectrogram + CNN Model")
+st.subheader("Mel Spectrogram")
 
 st.write("Upload a .wav audio file to classify urban sounds.")
 
